@@ -149,6 +149,9 @@ async function openSafeResponse(raw) {
 }
 
 app.get("/api/health", (_req, res) => res.json({ ok: true, service: "YourBrand Downloader API" }));
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 app.post("/api/inspect", async (req, res) => {
   try {
