@@ -213,4 +213,3 @@ app.use((err, _req, res, _next) => {
 });
 
 app.listen(PORT, () => console.log(`YourBrand API listening on http://localhost:${PORT}`));
-const path = require('path');app.use(express.static(path.join(__dirname, 'public')));

@@ -1,0 +1,1 @@
+Copy yourbrand_media_downloader.html here as index.html to serve the front-end from this backend.
