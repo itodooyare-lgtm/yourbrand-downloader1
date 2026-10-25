@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YourBrand Media Downloader</title>
+  <meta name="description" content="YourBrand media downloader for direct media file links.">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #101322;
+      color: #f5f6ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+    main {
+      width: 100%;
+      max-width: 560px;
+      background: #1b2035;
+      border: 1px solid #343b59;
+      border-radius: 20px;
+      padding: 28px;
+    }
+    h1 { margin-top: 0; font-size: 30px; }
+    p { color: #c2c8df; line-height: 1.5; }
+    label { display: block; margin: 22px 0 8px; }
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #58617f;
+      background: #111629;
+      color: white;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: #7867ff;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #status { overflow-wrap: anywhere; }
+    a { color: #b9b0ff; }
+    small { color: #aeb6d1; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>YourBrand</h1>
+    <p>Media Downloader</p>
+    <p>Enter a direct link to a video, audio, or image file that you are authorized to download.</p>
+    <form id="form">
+      <label for="url">Media file URL</label>
+      <input id="url" type="url" placeholder="https://example.com/video.mp4" required>
+      <button type="submit">Inspect media link</button>
+    </form>
+    <p id="status" role="status"></p>
+    <div id="download"></div>
+    <p><small>Supports direct media file URLs. Social media page extraction and DRM-protected downloads are not supported.</small></p>
+  </main>
+  <script>
+    const form = document.getElementById("form");
+    const input = document.getElementById("url");
+    const status = document.getElementById("status");
+    const download = document.getElementById("download");
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      status.textContent = "Checking link...";
+      download.replaceChildren();
+
+      try {
+        const response = await fetch("/api/inspect", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: input.value.trim() })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Could not inspect this link.");
+
+        status.textContent = "Media found: " + data.filename;
+        const button = document.createElement("button");
+        button.textContent = "Download file";
+        button.type = "button";
+        button.addEventListener("click", async function () {
+          button.disabled = true;
+          button.textContent = "Preparing download...";
+          try {
+            const result = await fetch("/api/download", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: input.value.trim() })
+            });
+            if (!result.ok) {
+              const errorData = await result.json();
+              throw new Error(errorData.error || "Download failed.");
+            }
+            const blob = await result.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = objectUrl;
+            link.download = data.filename || "download";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(objectUrl);
+            status.textContent = "Download started.";
+          } catch (error) {
+            status.textContent = error.message;
+          } finally {
+            button.disabled = false;
+            button.textContent = "Download file";
+          }
+        });
+        download.appendChild(button);
+      } catch (error) {
+        status.textContent = error.message || "Something went wrong.";
+      }
+    });
+  </script>
+</body>
+</html>
