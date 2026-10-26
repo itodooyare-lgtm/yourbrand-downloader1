@@ -74,6 +74,130 @@
   }
 }
 
+.format-picker {
+  margin: 18px 0;
+}
+
+.format-label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text, #fff);
+}
+
+.format-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.format-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 15px 12px;
+  border: 1px solid #344568;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #151e32, #202c49);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s, transform .2s;
+}
+
+.format-option:hover {
+  transform: translateY(-2px);
+  border-color: #6689ff;
+}
+
+.format-option.selected {
+  border-color: #5284ff;
+  box-shadow: 0 0 18px #3978ff40;
+  background: linear-gradient(135deg, #172b50, #263e70);
+}
+
+.format-symbol {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #315ed1;
+  font-size: 20px;
+}
+
+.format-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.format-copy strong {
+  font-size: 16px;
+}
+
+.format-copy small {
+  font-size: 11px;
+  color: #b9c9e8;
+}
+
+.format-check {
+  margin-left: auto;
+  color: #8caeff;
+  opacity: 0;
+}
+
+.format-option.selected .format-check {
+  opacity: 1;
+}
+
+.btn-primary {
+  background: linear-gradient(110deg, #287df5, #5556f6);
+  box-shadow: 0 8px 24px #3978ff35;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px #3978ff65;
+}
+
+.btn-muted {
+  border: 1px solid #344568;
+  transition: background .2s, transform .2s;
+}
+
+.btn-muted:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 520px) {
+  .format-options {
+    gap: 8px;
+  }
+
+  .format-option {
+    padding: 12px 8px;
+    gap: 7px;
+  }
+
+  .format-symbol {
+    flex-basis: 30px;
+    height: 30px;
+    font-size: 17px;
+  }
+
+  .format-copy strong {
+    font-size: 14px;
+  }
+
+  .format-copy small {
+    font-size: 10px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -122,13 +246,36 @@
   </div>
   <form class="download-panel" id="downloadForm">
     <div class="url-row"><span class="url-icon" aria-hidden="true">↗</span><input class="url-input" id="mediaUrl" type="url" inputmode="url" autocomplete="url" placeholder="Paste your direct video or audio link here..." aria-label="Direct media URL" required><button class="btn btn-muted" type="button" id="pasteBtn">▣ Paste</button><button class="btn btn-primary" type="submit">↓ Download</button></div>
-<div style="margin-top:14px; margin-bottom:14px;">
-  <label for="formatSelect" style="display:block; margin-bottom:8px;">Download format</label>
-  <select id="formatSelect" style="width:100%; padding:12px; border-radius:8px; background:#20212a; color:white; border:1px solid #555;">
-    <option value="mp4">MP4 - Video</option>
+
+<div class="format-picker">
+  <label class="format-label">Choose your download format</label>
+
+  <div class="format-options">
+    <button type="button" class="format-option selected" data-format="mp4" aria-pressed="true">
+      <span class="format-symbol">▶</span>
+      <span class="format-copy">
+        <strong>MP4</strong>
+        <small>Video · With visuals</small>
+      </span>
+      <span class="format-check">✓</span>
+    </button>
+
+    <button type="button" class="format-option" data-format="mp3" aria-pressed="false">
+      <span class="format-symbol">♫</span>
+      <span class="format-copy">
+        <strong>MP3</strong>
+        <small>Audio · Sound only</small>
+      </span>
+      <span class="format-check">✓</span>
+    </button>
+  </div>
+
+  <select id="formatSelect" aria-label="Download format" style="display:none">
+    <option value="mp4" selected>MP4 - Video</option>
     <option value="mp3">MP3 - Audio</option>
   </select>
 </div>
+
 
     <div class="status" id="status" role="status" aria-live="polite"></div>
   </form>
@@ -333,6 +480,19 @@
   previewInput.addEventListener('input', () => {
     clearTimeout(previewTimer);
     previewTimer = setTimeout(loadTikTokPreview, 800);
+  });
+
+  document.querySelectorAll('.format-option').forEach(button => {
+    button.addEventListener('click', () => {
+      const format = button.dataset.format;
+      $('formatSelect').value = format;
+
+      document.querySelectorAll('.format-option').forEach(option => {
+        const selected = option === button;
+        option.classList.toggle('selected', selected);
+        option.setAttribute('aria-pressed', String(selected));
+      });
+    });
   });
 
   $('year').textContent = new Date().getFullYear();
