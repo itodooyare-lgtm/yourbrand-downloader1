@@ -260,6 +260,81 @@
   modal.addEventListener('click', e => { if(e.target===modal) modal.classList.remove('open'); });
   document.addEventListener('keydown', e => {if(e.key==='Escape') modal.classList.remove('open');});
   $('clearHistory').addEventListener('click', () => {try{localStorage.removeItem(historyKey);}catch(_){} renderHistory();});
+  // YourBrand TikTok video preview
+  const previewInput = $('mediaUrl');
+  let previewTimer;
+
+  async function loadTikTokPreview() {
+    const raw = previewInput.value.trim();
+    let url;
+
+    try {
+      url = new URL(raw);
+    } catch (_) {
+      return;
+    }
+
+    if (
+      url.protocol !== 'https:' ||
+      !/(^|\.)tiktok\.com$/i.test(url.hostname)
+    ) {
+      return;
+    }
+
+    const title = $('previewTitle');
+    const meta = $('previewMeta');
+    const thumbnail = $('previewThumbnail');
+    const placeholder = $('previewPlaceholder');
+
+    title.textContent = 'Loading video details…';
+    meta.textContent = 'Fetching TikTok preview';
+
+    try {
+      const response = await fetch('/api/tiktok/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: url.href })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Preview unavailable.');
+      }
+
+      title.textContent = data.title || 'TikTok video';
+
+      const details = [];
+      if (data.creator) details.push('Creator: ' + data.creator);
+      if (Number.isFinite(data.duration)) {
+        const mins = Math.floor(data.duration / 60);
+        const secs = Math.floor(data.duration % 60);
+        details.push('Duration: ' + mins + ':' + String(secs).padStart(2, '0'));
+      }
+
+      meta.textContent = details.join(' · ') || 'TikTok video preview';
+
+      if (data.thumbnail) {
+        try {
+          const imageUrl = new URL(data.thumbnail);
+          if (imageUrl.protocol === 'https:') {
+            thumbnail.src = imageUrl.href;
+            thumbnail.style.display = 'block';
+            placeholder.style.display = 'none';
+          }
+        } catch (_) {}
+      }
+    } catch (err) {
+      title.textContent = 'Preview unavailable';
+      meta.textContent = err.message || 'Try another public TikTok link.';
+    }
+  }
+
+  previewInput.addEventListener('input', () => {
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(loadTikTokPreview, 800);
+  });
+
   $('year').textContent = new Date().getFullYear();
   $('themeToggle').addEventListener('click', () => {
     const light = document.body.dataset.theme !== 'light';
