@@ -1,189 +1,179 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>YourBrand Media Downloader</title>
-  <meta name="description" content="YourBrand media downloader for direct media file links.">
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      background: #101322;
-      color: #f5f6ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px;
-    }
-    main {
-      width: 100%;
-      max-width: 560px;
-      background: #1b2035;
-      border: 1px solid #343b59;
-      border-radius: 20px;
-      padding: 28px;
-    }
-    h1 { margin-top: 0; font-size: 30px; }
-    p { color: #c2c8df; line-height: 1.5; }
-    label { display: block; margin: 22px 0 8px; }
-    input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid #58617f;
-      background: #111629;
-      color: white;
-      font-size: 16px;
-    }
-    button {
-      width: 100%;
-      margin-top: 12px;
-      padding: 14px;
-      border: 0;
-      border-radius: 10px;
-      background: #7867ff;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #status { overflow-wrap: anywhere; }
-    a { color: #b9b0ff; }
-    small { color: #aeb6d1; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080f20">
+<meta name="description" content="YourBrand is a simple media downloader for supported direct video, audio and image links.">
+<title>YourBrand — Media Downloader</title>
+<style>
+:root{--bg:#080f20;--panel:#101a30;--panel2:#14213c;--line:#253858;--blue:#3b82f6;--cyan:#28b8ff;--purple:#6657f5;--text:#f5f8ff;--muted:#a7b6d2;--light:#f4f8ff;--ink:#0d1b34}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.55}a{color:inherit;text-decoration:none}button,input{font:inherit}.wrap{width:min(1160px,calc(100% - 40px));margin:auto}.nav{height:78px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;letter-spacing:-.7px}.logo{display:grid;place-items:center;width:37px;height:37px;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--purple));box-shadow:0 7px 24px #2368ed44}.logo svg{width:22px;height:22px}.brand span span{color:#38a8ff}.navlinks{display:flex;align-items:center;gap:28px;color:#d2ddf1;font-size:14px}.navlinks a:hover{color:#58b5ff}.nav-actions{display:flex;gap:10px;align-items:center}.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:700;cursor:pointer;display:inline-flex;justify-content:center;align-items:center;gap:9px;transition:transform .15s,filter .15s}.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.btn:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #72c5ff;outline-offset:3px}.btn-primary{color:white;background:linear-gradient(110deg,#287cf7,#4e5df4);box-shadow:0 9px 24px #2f6cf344}.btn-muted{background:#1b2942;color:#e4edff;border:1px solid #314465}.iconbtn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:#111c32;color:white;cursor:pointer;font-size:18px}.hero{position:relative;overflow:hidden;padding:65px 0 55px;background:radial-gradient(ellipse at 82% 12%,#143a80 0,transparent 36%),radial-gradient(ellipse at 50% 100%,#102b5a 0,transparent 50%),linear-gradient(120deg,#080f20,#0a1530 70%,#101e44)}.hero:after{content:"";position:absolute;width:440px;height:440px;border:1px solid #254b95;border-radius:50%;right:-150px;top:20px;box-shadow:0 0 0 50px #15377518,0 0 0 100px #15377512;pointer-events:none}.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;position:relative;z-index:1}.eyebrow{font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:#b5c9f0;font-weight:800}.eyebrow b{color:#36b4ff;margin:0 9px}h1{font-size:clamp(38px,5vw,64px);line-height:1.03;letter-spacing:-2.5px;margin:18px 0}.gradient-text{background:linear-gradient(90deg,#31b5ff,#6970ff);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{max-width:520px;color:#c3d0e6;font-size:17px}.visual{min-height:285px;display:grid;place-items:center;position:relative}.media-card{width:min(390px,95%);border:1px solid #4778ed;border-radius:24px;padding:13px;background:linear-gradient(140deg,#203d6a,#111c35);box-shadow:0 30px 70px #0007;transform:rotate(-3deg)}.preview{height:205px;border-radius:15px;display:grid;place-items:center;position:relative;overflow:hidden;background:linear-gradient(145deg,#17466e,#326ca0 44%,#172d56);background-image:radial-gradient(ellipse at 70% 20%,#a4d9ff77,transparent 28%),linear-gradient(155deg,transparent 45%,#172f54 46% 55%,transparent 56%),linear-gradient(25deg,#163e4c 15%,#3b86a0 16% 32%,#1c4569 33% 50%,#142a4c 51%)}.preview:before{content:"";position:absolute;width:190px;height:100px;bottom:0;left:0;background:linear-gradient(135deg,#16364e,#2c6778);clip-path:polygon(0 100%,55% 0,100% 100%)}.preview:after{content:"";position:absolute;width:210px;height:110px;bottom:0;right:-10px;background:linear-gradient(135deg,#264d6a,#0e243c);clip-path:polygon(0 100%,45% 0,100% 100%)}.play{z-index:1;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:#061022c9;border:1px solid #ffffff66;font-size:23px;padding-left:4px}.floating{position:absolute;z-index:2;background:#172d50;border:1px solid #3c78ec;border-radius:15px;padding:12px 15px;box-shadow:0 12px 30px #0005}.float-link{left:1%;top:35px;font-size:24px}.float-hd{right:0;top:25px;font-size:14px;font-weight:900;color:#a7d5ff}.float-audio{right:-1%;bottom:18px;display:flex;align-items:center;gap:12px;font-size:22px}.float-download{left:10%;bottom:5px;border-radius:50%;width:60px;height:60px;display:grid;place-items:center;font-size:23px;background:linear-gradient(135deg,#257cf7,#4c4de4)}.download-panel{margin-top:26px;position:relative;z-index:2;padding:8px;background:#f8fbff;border:1px solid #9dbdf4;border-radius:17px;box-shadow:0 16px 50px #0002}.url-row{display:flex;gap:10px;align-items:center}.url-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:#eef4fc;color:#47658f;flex-shrink:0}.url-input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#172845;padding:13px 4px;font-size:15px}.url-input::placeholder{color:#8191ad}.url-row .btn{min-height:45px}.trust{display:flex;gap:9px;align-items:center;color:#b7c9e4;font-size:12px;margin:10px 4px 0}.status{display:none;margin:14px 4px 2px;padding:12px 14px;border-radius:10px;font-size:14px}.status.show{display:block}.status.info{background:#eaf3ff;color:#153b70}.status.error{background:#fff0f0;color:#8a2424}.status.success{background:#e8fff3;color:#11653c}.benefits{padding:36px 0;background:#0b1425;border-bottom:1px solid #172943}.benefit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}.benefit{padding:4px}.feature-icon{height:48px;width:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#1e4a96,#142d5a);border:1px solid #2a569e;color:#dceaff;font-size:22px;margin-bottom:15px}.benefit h3{margin:0 0 7px;font-size:16px}.benefit p{margin:0;color:#adbed9;font-size:14px}.section{padding:66px 0}.section.light{background:var(--light);color:var(--ink)}.section.dark{background:#101a2c}.section-heading{text-align:center;margin:0 auto 34px;max-width:620px}.accent-line{height:4px;width:42px;border-radius:5px;background:linear-gradient(90deg,#25a9ff,#5b63ff);margin:0 auto 14px}.section-heading h2{font-size:30px;letter-spacing:-.8px;margin:0 0 5px}.section-heading p{margin:0;color:#7183a2}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.step{border:1px solid #d9e5f6;border-radius:16px;padding:24px;background:#fff;position:relative}.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#238bff,#4262f3);color:#fff;display:grid;place-items:center;font-weight:800}.step-icon{font-size:28px;color:#2c7dff;margin:10px 0}.step h3{text-align:center;margin:4px 0 7px;font-size:17px}.step p{text-align:center;color:#647795;margin:0;font-size:14px}.formats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.format{padding:22px 12px;border:1px solid #2a3d5c;border-radius:14px;text-align:center;background:#111d32}.format .feature-icon{margin:0 auto 10px}.format strong{display:block}.format small{color:#a7bad9}.note{margin-top:15px;text-align:center;font-size:13px;color:#9eb0cd}.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.why{display:flex;gap:12px;align-items:flex-start}.why .round{width:40px;height:40px;flex-shrink:0;border:1px solid #7db5ff;border-radius:50%;display:grid;place-items:center;color:#247bff;font-size:18px}.why h3{margin:0 0 4px;font-size:15px}.why p{margin:0;color:#6c7e9b;font-size:13px}.faq{max-width:800px;margin:auto}.faq details{padding:17px 0;border-bottom:1px solid #2b3b56}.faq summary{cursor:pointer;font-weight:700}.faq details p{color:#a9bad4;margin-bottom:0}.footer{padding:28px 0 20px;background:#080f1c;border-top:1px solid #1b2b45}.footer-top{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}.footer p{margin:4px 0;color:#9baccc;font-size:13px}.footlinks{display:flex;gap:20px;color:#bdcbe2;font-size:13px}.copyright{border-top:1px solid #1c2c46;margin-top:20px;padding-top:15px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#8395b4;font-size:12px}.modal-backdrop{display:none;position:fixed;inset:0;background:#030814c9;z-index:20;align-items:center;justify-content:center;padding:20px}.modal-backdrop.open{display:flex}.modal{width:min(540px,100%);max-height:80vh;overflow:auto;background:#111d32;border:1px solid #30476a;border-radius:20px;padding:22px;box-shadow:0 25px 90px #0008}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h2{margin:0}.close{background:transparent;border:0;color:white;font-size:26px;cursor:pointer}.history-list{padding:0;list-style:none}.history-list li{padding:12px 0;border-bottom:1px solid #283955;overflow-wrap:anywhere;font-size:13px;color:#c4d2e8}.history-list small{display:block;color:#8298ba;margin-top:3px}.empty{color:#9eb0cd}.fineprint{font-size:12px;color:#879cbd;margin-top:10px}
+@media(max-width:800px){.navlinks{display:none}.hero{padding:42px 0}.hero-grid{grid-template-columns:1fr;gap:10px}.visual{min-height:245px;max-width:550px;width:100%;margin:auto}.media-card{max-width:360px}.preview{height:175px}.float-link{left:3%;top:25px}.float-audio{right:0}.download-panel{margin-top:12px}.benefit-grid,.why-grid{grid-template-columns:repeat(2,1fr)}.formats{grid-template-columns:repeat(2,1fr)}.section{padding:50px 0}}
+@media(max-width:520px){.wrap{width:min(100% - 28px,1160px)}.nav{height:68px}.brand{font-size:20px}.nav-actions .btn{padding:10px 12px;font-size:12px}.hero{padding:35px 0 34px}h1{font-size:43px;letter-spacing:-1.8px}.lead{font-size:15px}.visual{min-height:225px}.media-card{width:78%;padding:9px}.preview{height:155px}.floating{padding:9px 11px}.float-audio{font-size:18px}.float-download{width:50px;height:50px}.url-row{flex-wrap:wrap;gap:6px}.url-icon{display:none}.url-input{flex-basis:100%;padding:12px 10px;border-bottom:1px solid #e1e9f5}.url-row .btn{flex:1;padding:11px 10px;font-size:13px}.trust{align-items:flex-start}.benefit-grid,.why-grid{gap:22px 15px}.steps{grid-template-columns:1fr}.section-heading h2{font-size:26px}.step{padding:20px}.footer-top{align-items:flex-start;flex-direction:column}.copyright{flex-direction:column}.footlinks{flex-wrap:wrap}}
+</style>
 </head>
 <body>
-  <main>
-    <h1>YourBrand</h1>
-    <p>Media Downloader</p>
-    <p>Enter a direct link to a video, audio, or image file that you are authorized to download.</p>
-    <form id="form">
-      <label for="url">Media file URL</label>
-      <input id="url" type="url" placeholder="https://example.com/video.mp4" required>
-      <button type="submit">Inspect media link</button>
-    </form>
-    <p id="status" role="status"></p>
-    <div id="download"></div>
-    <p><small>Supports direct media file URLs. Social media page extraction and DRM-protected downloads are not supported.</small></p>
-  </main>
-  <script>
-    const form = document.getElementById("form");
-    const input = document.getElementById("url");
-    const status = document.getElementById("status");
-    const download = document.getElementById("download");
-
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
-      status.textContent = "Checking link...";
-      download.replaceChildren();
-
-const enteredUrl = input.value.trim();
-let isTikTok = false;
-
-try {
-  const parsedUrl = new URL(enteredUrl);
-  isTikTok = [
-    "tiktok.com",
-    "www.tiktok.com",
-    "m.tiktok.com",
-    "vm.tiktok.com",
-    "vt.tiktok.com"
-  ].includes(parsedUrl.hostname.toLowerCase());
-} catch {
-  status.textContent = "Please enter a valid URL.";
-  return;
-}
-
-if (isTikTok) {
-  status.textContent = "Preparing TikTok download...";
-
-  try {
-    const response = await fetch("/api/tiktok/download", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: enteredUrl })
-    });
-
-    
-if (!response.ok) {
-  const text = await response.text();
-  throw new Error(
-    `TikTok request failed (${response.status}): ${text.slice(0, 200)}`
-  );
-}
-
-
-    const blob = await response.blob();
-    const objectUrl = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = objectUrl;
-    link.download = "yourbrand-tiktok-video.mp4";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
-    status.textContent = "Download started.";
-  } catch (error) {
-    status.textContent = error.message || "TikTok download failed.";
+<header class="wrap nav">
+  <a class="brand" href="#home" aria-label="YourBrand home"><span class="logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 4.5 19 12 6 19.5V4.5Z" stroke="white" stroke-width="2.5" stroke-linejoin="round"/></svg></span><span>Your<span>Brand</span></span></a>
+  <nav class="navlinks" aria-label="Main navigation"><a href="#home">Home</a><a href="#how">How it Works</a><a href="#formats">Supported Formats</a><a href="#faq">FAQ</a></nav>
+  <div class="nav-actions"><button class="iconbtn" id="themeToggle" title="Toggle light and dark theme" aria-label="Toggle theme">☾</button><button class="btn btn-primary" id="historyOpen">Download History</button></div>
+</header>
+<main>
+<section class="hero" id="home"><div class="wrap">
+  <div class="hero-grid">
+    <div><div class="eyebrow">FAST <b>·</b> SIMPLE <b>·</b> RELIABLE</div><h1>Your Online Media <span class="gradient-text">Downloader</span></h1><p class="lead">Paste a supported media link and download it through YourBrand’s server-powered workflow.</p></div>
+    <div class="visual" aria-hidden="true"><div class="floating float-link">↗</div><div class="floating float-hd">HD</div><div class="media-card"><div class="preview"><div class="play">▶</div></div></div><div class="floating float-download">↓</div><div class="floating float-audio">♫ <span style="font-size:12px;color:#b5c9e7">▂ ▄ ▆ ▃ ▅ ▂ ▄</span><b style="font-size:10px;background:#2957bc;padding:4px 6px;border-radius:5px">MP3</b></div></div>
+  </div>
+  <form class="download-panel" id="downloadForm">
+    <div class="url-row"><span class="url-icon" aria-hidden="true">↗</span><input class="url-input" id="mediaUrl" type="url" inputmode="url" autocomplete="url" placeholder="Paste your direct video or audio link here..." aria-label="Direct media URL" required><button class="btn btn-muted" type="button" id="pasteBtn">▣ Paste</button><button class="btn btn-primary" type="submit">↓ Download</button></div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </form>
+  <div class="trust">♢ <span>Supports TikTok links and supported direct media URLs. Only download content you have permission to save.</span></div>
+</div></section>
+<section class="benefits"><div class="wrap benefit-grid">
+  <article class="benefit"><div class="feature-icon">ϟ</div><h3>Simple Workflow</h3><p>Paste a link and try to open or save the linked media.</p></article>
+  <article class="benefit"><div class="feature-icon">♢</div><h3>Format Aware</h3><p>Common video, audio and image file types are recognized.</p></article>
+  <article class="benefit"><div class="feature-icon">↗</div><h3>Direct Link Support</h3><p>Designed for direct links to supported media files.</p></article>
+  <article class="benefit"><div class="feature-icon">▯</div><h3>Any Device</h3><p>Use the responsive interface on phones, tablets and computers.</p></article>
+</div></section>
+<section class="section light" id="how"><div class="wrap"><div class="section-heading"><div class="accent-line"></div><h2>How It Works</h2><p>Three simple steps to get started.</p></div><div class="steps">
+  <article class="step"><div class="step-num">1</div><div class="step-icon">↗</div><h3>Paste Link</h3><p>Copy a direct URL to a media file and paste it into the input box.</p></article>
+  <article class="step"><div class="step-num">2</div><div class="step-icon">⚙</div><h3>Check the Link</h3><p>Your browser checks the URL format and identifies a likely file type.</p></article>
+  <article class="step"><div class="step-num">3</div><div class="step-icon">↓</div><h3>Open or Save</h3><p>Try to download the file. The source server and browser determine what is possible.</p></article>
+</div></div></section>
+<section class="section dark" id="formats"><div class="wrap"><div class="section-heading"><div class="accent-line"></div><h2>Supported Formats</h2><p>Common file types for direct media URLs.</p></div><div class="formats">
+  <div class="format"><div class="feature-icon">▷</div><strong>MP4</strong><small>Video</small></div><div class="format"><div class="feature-icon">♫</div><strong>MP3</strong><small>Audio</small></div><div class="format"><div class="feature-icon">▧</div><strong>JPG / PNG</strong><small>Images</small></div><div class="format"><div class="feature-icon">▤</div><strong>WebM / WAV</strong><small>Video / Audio</small></div>
+</div><p class="note">These are recognized extensions, not a guarantee that every URL can be downloaded.</p></div></section>
+<section class="section light"><div class="wrap"><div class="section-heading"><div class="accent-line"></div><h2>Why Choose YourBrand?</h2><p>A straightforward starting point for your media workflow.</p></div><div class="why-grid">
+  <div class="why"><div class="round">☺</div><div><h3>User Friendly</h3><p>A clean interface that is easy to navigate.</p></div></div><div class="why"><div class="round">♙</div><div><h3>No Account Needed</h3><p>Use the front-end without signing up.</p></div></div><div class="why"><div class="round">♢</div><div><h3>Privacy Minded</h3><p>Links are processed in your browser in this demo.</p></div></div><div class="why"><div class="round">⟳</div><div><h3>Ready to Extend</h3><p>Can be connected to a secure download backend.</p></div></div>
+</div></div></section>
+<section class="section dark" id="faq"><div class="wrap"><div class="section-heading"><div class="accent-line"></div><h2>Frequently Asked Questions</h2><p>What to know before using the demo.</p></div><div class="faq">
+  <details><summary>Can it download any website video?</summary><p>No. This front-end is intended for direct media file URLs. A page that contains a video is different from a direct link to the media file, and many platforms restrict access or use protected streams.</p></details>
+  <details><summary>Why might a download fail?</summary><p>The URL may point to a webpage instead of a file, require authentication, expire, block cross-origin access, or be configured to stream rather than download. The source server and browser control these behaviors.</p></details>
+  <details><summary>Does this demo upload my link to a server?</summary><p>No. The front-end checks the URL in your browser. Download history is stored locally in this browser only. There is no server or media conversion engine connected yet.</p></details>
+  <details><summary>How do I add real media processing?</summary><p>Connect a backend API that validates direct URLs, safely fetches permitted media, returns metadata and a temporary download link, and enforces size, rate, and security limits. See the setup notes included with this project.</p></details>
+</div></div></section>
+</main>
+<footer class="footer"><div class="wrap"><div class="footer-top"><div><a class="brand" href="#home"><span class="logo">▷</span><span>Your<span>Brand</span></span></a><p>Download responsibly. Enjoy anytime.</p></div><div class="footlinks"><a href="#home">Home</a><a href="#how">How it Works</a><a href="#formats">Formats</a><a href="#faq">FAQ</a></div></div><div class="copyright"><span>© <span id="year"></span> YourBrand.</span><span>Terms of Use &nbsp; | &nbsp; Privacy</span></div></div></footer>
+<div class="modal-backdrop" id="historyModal" role="dialog" aria-modal="true" aria-labelledby="historyTitle"><div class="modal"><div class="modal-head"><h2 id="historyTitle">Download History</h2><button class="close" id="historyClose" aria-label="Close history">×</button></div><p class="fineprint">Stored only in this browser on this device.</p><ul class="history-list" id="historyList"></ul><button class="btn btn-muted" id="clearHistory" type="button">Clear history</button></div></div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const input = $('mediaUrl'), status = $('status');
+  const historyKey = 'yourbrand-download-history-v1';
+  const knownExt = /\.(mp4|m4v|mov|webm|mkv|mp3|m4a|aac|wav|ogg|flac|jpg|jpeg|png|gif|webp|avif)(?:$|[?#])/i;
+  const typeFor = url => {
+    const m = url.match(/\.([a-z0-9]+)(?:$|[?#])/i);
+    return m ? m[1].toUpperCase().replace('JPEG','JPG') : 'Unknown';
+  };
+  function tell(message, kind='info') {
+    status.textContent = message; status.className = 'status show ' + kind;
   }
-
-  return;
-}
-
-      try {
-        const response = await fetch("/api/inspect", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: input.value.trim() })
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Could not inspect this link.");
-
-        status.textContent = "Media found: " + data.filename;
-        const button = document.createElement("button");
-        button.textContent = "Download file";
-        button.type = "button";
-        button.addEventListener("click", async function () {
-          button.disabled = true;
-          button.textContent = "Preparing download...";
-          try {
-            const result = await fetch("/api/download", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ url: input.value.trim() })
-            });
-            if (!result.ok) {
-              const errorData = await result.json();
-              throw new Error(errorData.error || "Download failed.");
-            }
-            const blob = await result.blob();
-            const objectUrl = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = objectUrl;
-            link.download = data.filename || "download";
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            URL.revokeObjectURL(objectUrl);
-            status.textContent = "Download started.";
-          } catch (error) {
-            status.textContent = error.message;
-          } finally {
-            button.disabled = false;
-            button.textContent = "Download file";
-          }
-        });
-        download.appendChild(button);
-      } catch (error) {
-        status.textContent = error.message || "Something went wrong.";
+  function getHistory() {
+    try { return JSON.parse(localStorage.getItem(historyKey) || '[]'); } catch (_) { return []; }
+  }
+  function saveHistory(url, outcome) {
+    const items = getHistory().filter(x => x.url !== url);
+    items.unshift({url, outcome, date: new Date().toLocaleString()});
+    try { localStorage.setItem(historyKey, JSON.stringify(items.slice(0,20))); } catch (_) {}
+  }
+  function safeUrl(raw) {
+    let u;
+    try { u = new URL(raw); } catch (_) { return null; }
+    if (!['http:', 'https:'].includes(u.protocol)) return null;
+    if (u.username || u.password) return null;
+    return u;
+  }
+  $('pasteBtn').addEventListener('click', async () => {
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.readText) throw new Error('Clipboard unavailable');
+      input.value = (await navigator.clipboard.readText()).trim();
+      input.focus();
+      tell(input.value ? 'Link pasted. Press Download to continue.' : 'Your clipboard is empty.', input.value ? 'success' : 'info');
+    } catch (_) {
+      input.focus();
+      tell('Clipboard access was blocked. Long-press the field and choose Paste.', 'info');
+    }
+  });
+  $('downloadForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const raw = input.value.trim(), url = safeUrl(raw);
+    if (!url) { tell('Enter a valid public HTTP or HTTPS media URL.', 'error'); return; }
+    const clean = url.href;
+    const isTikTok = /(^|\.)tiktok\.com$/i.test(url.hostname) || /(^|\.)tiktokv\.com$/i.test(url.hostname) || /(^|\.)vm\.tiktok\.com$/i.test(url.hostname);
+    const submitButton = $('downloadForm').querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Preparing…';
+    tell('Preparing your download. Please keep this page open.', 'info');
+    try {
+      const endpoint = isTikTok ? '/api/tiktok/download' : '/api/download';
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: clean })
+      });
+      if (!response.ok) {
+        let message = 'Download failed. Please try again.';
+        try { const data = await response.json(); if (data && data.error) message = data.error; } catch (_) {}
+        throw new Error(message + ' (HTTP ' + response.status + ')');
       }
+      const blob = await response.blob();
+      if (!blob.size) throw new Error('The server returned an empty file.');
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = isTikTok ? 'yourbrand-tiktok-video.mp4' : ('yourbrand-media.' + (typeFor(clean) !== 'Unknown' ? typeFor(clean).toLowerCase() : 'bin'));
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
+      saveHistory(clean, 'Download completed');
+      tell('Your download is ready. Check your Downloads folder.', 'success');
+    } catch (err) {
+      saveHistory(clean, 'Download failed');
+      tell(err.message || 'Download failed. Please try again.', 'error');
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+    }
+  });
+  function renderHistory() {
+    const list = $('historyList'), items = getHistory();
+    list.replaceChildren();
+    if (!items.length) { const li=document.createElement('li'); li.className='empty'; li.textContent='No download attempts yet.'; list.appendChild(li); return; }
+    items.forEach(item => {
+      const li=document.createElement('li'), link=document.createElement('a'), small=document.createElement('small');
+      link.href=item.url; link.target='_blank'; link.rel='noopener noreferrer'; link.textContent=item.url;
+      small.textContent=item.date + ' · ' + item.outcome;
+      li.append(link, small); list.appendChild(li);
     });
-  </script>
+  }
+  const modal = $('historyModal');
+  $('historyOpen').addEventListener('click', () => {renderHistory(); modal.classList.add('open'); $('historyClose').focus();});
+  $('historyClose').addEventListener('click', () => modal.classList.remove('open'));
+  modal.addEventListener('click', e => { if(e.target===modal) modal.classList.remove('open'); });
+  document.addEventListener('keydown', e => {if(e.key==='Escape') modal.classList.remove('open');});
+  $('clearHistory').addEventListener('click', () => {try{localStorage.removeItem(historyKey);}catch(_){} renderHistory();});
+  $('year').textContent = new Date().getFullYear();
+  $('themeToggle').addEventListener('click', () => {
+    const light = document.body.dataset.theme !== 'light';
+    document.body.dataset.theme = light ? 'light' : 'dark';
+    if (light) {
+      document.documentElement.style.setProperty('--bg','#f4f8ff');
+      document.documentElement.style.setProperty('--text','#10203a');
+      document.documentElement.style.setProperty('--panel','#ffffff');
+      document.querySelector('.hero').style.background='radial-gradient(ellipse at 82% 12%,#dbeaff 0,transparent 42%),linear-gradient(120deg,#edf5ff,#e8efff)';
+      document.querySelector('.hero .lead').style.color='#405675';
+      document.querySelector('.hero .eyebrow').style.color='#405675';
+      document.querySelector('.benefits').style.background='#eaf1fb';
+      document.querySelectorAll('.benefit p').forEach(x=>x.style.color='#526785');
+      document.querySelectorAll('.benefit h3').forEach(x=>x.style.color='#10203a');
+      document.querySelector('.footer').style.background='#eaf1fb';
+      document.querySelector('.footer').style.color='#10203a';
+      $('themeToggle').textContent='☀';
+    } else { location.reload(); }
+  });
+})();
+</script>
 </body>
 </html>
