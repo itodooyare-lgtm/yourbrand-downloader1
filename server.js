@@ -7,6 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { request, Agent } from "undici";
 import { spawn } from "node:child_process";
+import ffmpegPath from "ffmpeg-static";
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const MAX_BYTES = Number(process.env.MAX_DOWNLOAD_BYTES || 250 * 1024 * 1024);
