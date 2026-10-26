@@ -217,7 +217,7 @@ app.post("/api/download", async (req, res) => {
   }
 });
 
-app.use((err, _req, res, _next) => {
+
 
 app.post("/api/tiktok/download", async (req, res) => {
   const raw = req.body?.url;
@@ -318,8 +318,13 @@ app.post("/api/tiktok/download", async (req, res) => {
   });
 });
 
+  
+app.use((err, _req, res, _next) => {
   console.error("Request error:", err.message);
-  if (!res.headersSent) res.status(500).json({ error: "Unexpected server error." });
+  if (!res.headersSent) {
+    res.status(500).json({ error: "Unexpected server error." });
+  }
 });
+
 
 app.listen(PORT, () => console.log(`YourBrand API listening on http://localhost:${PORT}`));
