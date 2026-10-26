@@ -1,4 +1,4 @@
-
+0
 #!/usr/bin/env bash
 set -eu
 
@@ -7,6 +7,6 @@ curl -fL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o bin
 chmod +x bin/yt-dlp
 
 ./bin/yt-dlp --version
-
+echo "YT-DLP VERSION CHECK COMPLETE"
 npm install
 
