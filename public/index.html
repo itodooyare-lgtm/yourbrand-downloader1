@@ -27,6 +27,14 @@
   </div>
   <form class="download-panel" id="downloadForm">
     <div class="url-row"><span class="url-icon" aria-hidden="true">↗</span><input class="url-input" id="mediaUrl" type="url" inputmode="url" autocomplete="url" placeholder="Paste your direct video or audio link here..." aria-label="Direct media URL" required><button class="btn btn-muted" type="button" id="pasteBtn">▣ Paste</button><button class="btn btn-primary" type="submit">↓ Download</button></div>
+<div style="margin-top:14px; margin-bottom:14px;">
+  <label for="formatSelect" style="display:block; margin-bottom:8px;">Download format</label>
+  <select id="formatSelect" style="width:100%; padding:12px; border-radius:8px; background:#20212a; color:white; border:1px solid #555;">
+    <option value="mp4">MP4 - Video</option>
+    <option value="mp3">MP3 - Audio</option>
+  </select>
+</div>
+
     <div class="status" id="status" role="status" aria-live="polite"></div>
   </form>
   <div class="trust">♢ <span>Supports TikTok links and supported direct media URLs. Only download content you have permission to save.</span></div>
