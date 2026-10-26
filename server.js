@@ -349,6 +349,111 @@ app.post("/api/tiktok/download", async (req, res) => {
   });
 });
  
+app.post("/api/tiktok/preview", async (req, res) => {
+  const raw = req.body?.url;
+
+  if (typeof raw !== "string") {
+    return res.status(400).json({ error: "Provide a TikTok URL." });
+  }
+
+  let url;
+  try {
+    url = new URL(raw.trim());
+  } catch {
+    return res.status(400).json({ error: "Enter a valid TikTok URL." });
+  }
+
+  const allowedHosts = new Set([
+    "tiktok.com",
+    "www.tiktok.com",
+    "m.tiktok.com",
+    "vm.tiktok.com",
+    "vt.tiktok.com"
+  ]);
+
+  if (
+    url.protocol !== "https:" ||
+    !allowedHosts.has(url.hostname.toLowerCase()) ||
+    url.username ||
+    url.password
+  ) {
+    return res.status(400).json({
+      error: "Please provide a public TikTok video link."
+    });
+  }
+
+  const extractor = path.join(__dirname, "bin", "yt-dlp");
+  const args = [
+    "--dump-single-json",
+    "--skip-download",
+    "--no-playlist",
+    "--no-warnings",
+    "--quiet",
+    "--user-agent",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+    url.href
+  ];
+
+  const child = spawn(extractor, args, {
+    shell: false,
+    timeout: 45000,
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+
+  let output = "";
+  let stderr = "";
+  let finished = false;
+
+  child.stdout.on("data", chunk => {
+    output += chunk.toString();
+
+    if (output.length > 2 * 1024 * 1024) {
+      child.kill();
+    }
+  });
+
+  child.stderr.on("data", chunk => {
+    stderr = (stderr + chunk.toString()).slice(-2000);
+  });
+
+  child.on("error", () => {
+    if (!finished) {
+      finished = true;
+      res.status(500).json({ error: "The preview service could not start." });
+    }
+  });
+
+  child.on("close", code => {
+    if (finished) return;
+    finished = true;
+
+    if (code !== 0) {
+      console.error("TikTok preview failed:", stderr);
+      return res.status(502).json({
+        error: "Could not load this TikTok preview. Check the link and try again."
+      });
+    }
+
+    try {
+      const info = JSON.parse(output);
+
+      res.json({
+        title: info.title || "TikTok video",
+        thumbnail: info.thumbnail || null,
+        duration: Number.isFinite(info.duration) ? info.duration : null,
+        creator: info.uploader || info.channel || null
+      });
+    } catch {
+      res.status(502).json({ error: "Could not read the video details." });
+    }
+  });
+
+  req.on("aborted", () => child.kill());
+  res.on("close", () => {
+    if (!res.writableEnded) child.kill();
+  });
+});
+
 app.use((err, _req, res, _next) => {
   console.error("Request error:", err.message);
   if (!res.headersSent) {
