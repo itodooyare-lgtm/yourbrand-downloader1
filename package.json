@@ -11,9 +11,10 @@
     "node": ">=20"
   },
   "dependencies": {
-    "express": "^5.1.0",
-    "express-rate-limit": "^8.1.0",
-    "helmet": "^8.1.0",
-    "undici": "^7.16.0"
-  }
+  "express": "^5.1.0",
+  "express-rate-limit": "^8.1.0",
+  "helmet": "^8.1.0",
+  "undici": "^7.16.0",
+  "ffmpeg-static": "^5.2.0"
+}
 }
