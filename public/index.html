@@ -108,10 +108,14 @@ if (isTikTok) {
       body: JSON.stringify({ url: enteredUrl })
     });
 
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.error || "TikTok download failed.");
-    }
+    
+if (!response.ok) {
+  const text = await response.text();
+  throw new Error(
+    `TikTok request failed (${response.status}): ${text.slice(0, 200)}`
+  );
+}
+
 
     const blob = await response.blob();
     const objectUrl = URL.createObjectURL(blob);
