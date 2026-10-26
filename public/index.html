@@ -112,7 +112,10 @@
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: clean })
+        body: JSON.stringify({
+  url: clean,
+  format: isTikTok ? (document.getElementById('formatSelect')?.value || 'mp4') : 'mp4'
+})
       });
       if (!response.ok) {
         let message = 'Download failed. Please try again.';
