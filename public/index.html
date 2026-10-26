@@ -86,7 +86,39 @@
 <section class="hero" id="home"><div class="wrap">
   <div class="hero-grid">
     <div><div class="eyebrow">FAST <b>·</b> SIMPLE <b>·</b> RELIABLE</div><h1>Your Online Media <span class="gradient-text">Downloader</span></h1><p class="lead">Paste a supported media link and download it through YourBrand’s server-powered workflow.</p></div>
-    <div class="visual" aria-hidden="true"><div class="floating float-link">↗</div><div class="floating float-hd">HD</div><div class="media-card"><div class="preview"><div class="play">▶</div></div></div><div class="floating float-download">↓</div><div class="floating float-audio">♫ <span style="font-size:12px;color:#b5c9e7">▂ ▄ ▆ ▃ ▅ ▂ ▄</span><b style="font-size:10px;background:#2957bc;padding:4px 6px;border-radius:5px">MP3</b></div></div>
+    
+<div class="visual" id="videoVisual">
+  <div class="floating float-link">↗</div>
+  <div class="floating float-hd">HD</div>
+
+  <div class="media-card">
+    <div class="preview" id="videoPreview">
+      <img
+        id="previewThumbnail"
+        src=""
+        alt="TikTok video thumbnail"
+        style="display:none;width:100%;height:100%;object-fit:cover;border-radius:14px;position:absolute;inset:0;"
+      />
+      <div class="play" id="previewPlay">▶</div>
+      <div id="previewPlaceholder" style="position:absolute;bottom:18px;left:18px;right:18px;text-align:left;color:white;">
+        <b style="font-size:18px;">Your next download</b>
+        <div style="font-size:12px;margin-top:6px;opacity:.8;">Paste a TikTok link to preview</div>
+      </div>
+    </div>
+
+    <div id="previewDetails" style="padding:14px 16px;color:white;">
+      <div id="previewTitle" style="font-weight:700;font-size:14px;">Ready to preview</div>
+      <div id="previewMeta" style="font-size:12px;color:#aab9d5;margin-top:6px;">TikTok video details will appear here</div>
+    </div>
+  </div>
+
+  <div class="floating float-download">↓</div>
+  <div class="floating float-audio">
+    ♫ <span style="font-size:12px;color:#b5c9e7">▂ ▄ ▆ ▃ ▅ ▂ ▄</span>
+    <b style="font-size:10px;background:#2957bc;padding:4px 6px;border-radius:5px">MP3</b>
+  </div>
+</div>
+
   </div>
   <form class="download-panel" id="downloadForm">
     <div class="url-row"><span class="url-icon" aria-hidden="true">↗</span><input class="url-input" id="mediaUrl" type="url" inputmode="url" autocomplete="url" placeholder="Paste your direct video or audio link here..." aria-label="Direct media URL" required><button class="btn btn-muted" type="button" id="pasteBtn">▣ Paste</button><button class="btn btn-primary" type="submit">↓ Download</button></div>
