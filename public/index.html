@@ -81,6 +81,57 @@
       status.textContent = "Checking link...";
       download.replaceChildren();
 
+const enteredUrl = input.value.trim();
+let isTikTok = false;
+
+try {
+  const parsedUrl = new URL(enteredUrl);
+  isTikTok = [
+    "tiktok.com",
+    "www.tiktok.com",
+    "m.tiktok.com",
+    "vm.tiktok.com",
+    "vt.tiktok.com"
+  ].includes(parsedUrl.hostname.toLowerCase());
+} catch {
+  status.textContent = "Please enter a valid URL.";
+  return;
+}
+
+if (isTikTok) {
+  status.textContent = "Preparing TikTok download...";
+
+  try {
+    const response = await fetch("/api/tiktok/download", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: enteredUrl })
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || "TikTok download failed.");
+    }
+
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = objectUrl;
+    link.download = "yourbrand-tiktok-video.mp4";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+    status.textContent = "Download started.";
+  } catch (error) {
+    status.textContent = error.message || "TikTok download failed.";
+  }
+
+  return;
+}
+
       try {
         const response = await fetch("/api/inspect", {
           method: "POST",
