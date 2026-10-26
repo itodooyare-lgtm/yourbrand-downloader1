@@ -6,7 +6,7 @@ import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { request, Agent } from "undici";
-
+import { spawn } from "node:child_process";
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const MAX_BYTES = Number(process.env.MAX_DOWNLOAD_BYTES || 250 * 1024 * 1024);
@@ -218,6 +218,106 @@ app.post("/api/download", async (req, res) => {
 });
 
 app.use((err, _req, res, _next) => {
+
+app.post("/api/tiktok/download", async (req, res) => {
+  const raw = req.body?.url;
+
+  if (typeof raw !== "string") {
+    return res.status(400).json({ error: "Provide a TikTok URL." });
+  }
+
+  let url;
+  try {
+    url = new URL(raw.trim());
+  } catch {
+    return res.status(400).json({ error: "Enter a valid TikTok URL." });
+  }
+
+  const allowedHosts = new Set([
+    "tiktok.com",
+    "www.tiktok.com",
+    "m.tiktok.com",
+    "vm.tiktok.com",
+    "vt.tiktok.com"
+  ]);
+
+  if (
+    url.protocol !== "https:" ||
+    !allowedHosts.has(url.hostname.toLowerCase()) ||
+    url.username ||
+    url.password
+  ) {
+    return res.status(400).json({
+      error: "Please provide a public TikTok video link."
+    });
+  }
+
+  const extractor = path.join(__dirname, "bin", "yt-dlp");
+
+  const child = spawn(extractor, [
+    "--no-playlist",
+    "--no-warnings",
+    "--quiet",
+    "--format", "best",
+    "--output", "-",
+    url.href
+  ], {
+    shell: false,
+    timeout: 120000,
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+
+  let stderr = "";
+  let sentData = false;
+
+  child.stderr.on("data", chunk => {
+    stderr = (stderr + chunk.toString()).slice(-4000);
+  });
+
+  child.stdout.on("data", chunk => {
+    if (!sentData) {
+      sentData = true;
+      res.setHeader("Content-Type", "application/octet-stream");
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="yourbrand-tiktok-video.mp4"'
+      );
+      res.setHeader("Cache-Control", "no-store");
+      res.setHeader("X-Content-Type-Options", "nosniff");
+    }
+    res.write(chunk);
+  });
+
+  child.on("error", err => {
+    console.error("TikTok extractor error:", err.message);
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: "The video extractor could not start."
+      });
+    } else {
+      res.destroy();
+    }
+  });
+
+  child.on("close", code => {
+    if (code === 0 && sentData) {
+      res.end();
+    } else if (!res.headersSent) {
+      console.error("TikTok extraction failed:", stderr);
+      res.status(502).json({
+        error: "Could not retrieve this video. It may be unavailable or unsupported."
+      });
+    } else {
+      res.destroy();
+    }
+  });
+
+  req.on("aborted", () => child.kill());
+  res.on("close", () => {
+    if (!res.writableEnded) child.kill();
+  });
+});
+
   console.error("Request error:", err.message);
   if (!res.headersSent) res.status(500).json({ error: "Unexpected server error." });
 });
