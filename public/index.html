@@ -494,7 +494,37 @@
 
       meta.textContent = details.join(' · ') || 'TikTok video preview';
 
+      
       if (data.thumbnail) {
+        thumbnail.onload = () => {
+          thumbnail.style.display = 'block';
+          placeholder.style.display = 'none';
+        };
+
+        thumbnail.onerror = () => {
+          thumbnail.style.display = 'none';
+          placeholder.style.display = 'block';
+          meta.textContent = 'Thumbnail unavailable for this video.';
+        };
+
+        try {
+          const imageUrl = new URL(data.thumbnail);
+
+          if (imageUrl.protocol === 'https:') {
+            thumbnail.style.display = 'none';
+            thumbnail.src = imageUrl.href;
+          } else {
+            meta.textContent = 'Secure thumbnail unavailable.';
+          }
+        } catch (_) {
+          meta.textContent = 'Could not read the thumbnail URL.';
+        }
+      } else {
+        thumbnail.style.display = 'none';
+        placeholder.style.display = 'block';
+        meta.textContent = 'No thumbnail available for this video.';
+      }
+
         try {
           const imageUrl = new URL(data.thumbnail);
           if (imageUrl.protocol === 'https:') {
