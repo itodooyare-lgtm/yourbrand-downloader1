@@ -9,6 +9,7 @@ import { request, Agent } from "undici";
 import { spawn } from "node:child_process";
 import ffmpegPath from "ffmpeg-static";
 const app = express();
+app.set('trust proxy', 1);
 const PORT = Number(process.env.PORT || 3000);
 const MAX_BYTES = Number(process.env.MAX_DOWNLOAD_BYTES || 250 * 1024 * 1024);
 const TIMEOUT_MS = Number(process.env.DOWNLOAD_TIMEOUT_MS || 30000);
